@@ -6,24 +6,52 @@
     <title>Demo Jquery y JqueryUI</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!--link rel="stylesheet" href="estilos/estilos.css" type="text/css" /-->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   </head>
-  <body>
-    
-      <h1>Ejemplo de Uso de Jquery + CouchDB</h1>
 
+  <body>  
+    <h1>Ejemplo de Uso de Jquery + CouchDB</h1>
+    <!-- 1. Filtrar por pais - Argentina 2. Tab para cada jugador 3. Contenido tab: Info jugador-->
+    <div id = "tabs">
+      <ul id = "jugadores">
+
+      </ul>
+      <div id = "infoJugador">
+
+      </div>
+    </div>
   </body>
+
   <script>
     $(document).ready(function() {
       $.ajax({
             dataType: 'json',
             url: "http://127.0.0.1:5984/mundial2018/_all_docs?include_docs=True"
-            }).then(function(data) {
-              
-              
-
-            });
+      }).then(function(data) {
+          // var cadena = '';
+          for(var i=0; i<data.rows.length; i++){
+            // Filtro por pais
+            if(data.rows[i].doc.Country == "Argentina") {
+              // Tabs de cada jugador
+              $("#jugadores").append("<li><a href='#tabs-" + i +
+                "'><b>" + data.rows[i].doc.FirstName + " " +  data.rows[i].doc.LastName +
+                  "</b></a></li>");
+              // Datos del jugador
+              $("#infoJugador").append("<div id = 'tabs-" + i + "'><p><b>Dorsal = </b>" + 
+                data.rows[i].doc.Numero + "<br><b>Display name = </b>" + data.rows[i].doc.FIFADisplayName +
+                "<br><b>Nombres = </b>" + data.rows[i].doc.FirstName.split()[0] + "<br><b>Apellido = </b>"  + data.rows[i].doc.LastName + 
+                "<br><b>Posición en el campo = </b>" + data.rows[i].doc.POS + "<br><b>Altura = </b>" + 
+                data.rows[i].doc.Height + " cm<br><b>Número de goles = </b>" + data.rows[i].doc.Goals + "</p></div>");
+            }   
+          }
+          // $('#myTable tr:last').after(cadena);
+          $(function() {
+            $ ( "#tabs" ).tabs();
+          } );
+        
+        });
     });
   </script>
+
 </html>
